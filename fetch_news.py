@@ -15,6 +15,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timedelta, timezone
 from time import mktime
+from urllib.parse import urljoin
 
 import feedparser
 import requests
@@ -34,34 +35,78 @@ def clean(text, limit=220):
     return text[:limit]
 
 
-def fetch(src):
-    try:
-        r = requests.get(src["url"], headers={"User-Agent": UA}, timeout=20)
-        r.raise_for_status()
-        feed = feedparser.parse(r.content)
-        cutoff = datetime.now(timezone.utc) - timedelta(hours=MAX_AGE_H)
-        items = []
-        for e in feed.entries:
-            ts = e.get("published_parsed") or e.get("updated_parsed")
-            if ts:
-                dt = datetime.fromtimestamp(mktime(ts), timezone.utc)
-                if dt < cutoff:
-                    continue
-            title = clean(e.get("title"), 200)
-            if not title:
+def parse_feed(content):
+    """Zwraca (świeże_wpisy, liczba_wszystkich, data_najnowszego)."""
+    feed = feedparser.parse(content)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=MAX_AGE_H)
+    items, newest = [], None
+    for e in feed.entries:
+        ts = e.get("published_parsed") or e.get("updated_parsed")
+        if ts:
+            dt = datetime.fromtimestamp(mktime(ts), timezone.utc)
+            newest = dt if newest is None or dt > newest else newest
+            if dt < cutoff:
                 continue
-            items.append({
-                "title": title,
-                "summary": clean(e.get("summary") or e.get("description")),
-                "link": e.get("link", ""),
-            })
-            if len(items) >= MAX_PER_FEED:
+        title = clean(e.get("title"), 200)
+        if not title:
+            continue
+        items.append({
+            "title": title,
+            "summary": clean(e.get("summary") or e.get("description")),
+            "link": e.get("link", ""),
+        })
+        if len(items) >= MAX_PER_FEED:
+            break
+    return items, len(feed.entries), newest
+
+
+def discover_feeds(home):
+    """Szuka <link rel="alternate" type="application/rss+xml"> na stronie głównej."""
+    r = requests.get(home, headers={"User-Agent": UA}, timeout=20)
+    r.raise_for_status()
+    found = []
+    for tag in re.findall(r"<link[^>]+>", r.text, re.I):
+        if re.search(r'type=["\']application/(rss|atom)\+xml', tag, re.I):
+            m = re.search(r'href=["\']([^"\']+)', tag, re.I)
+            if m:
+                found.append(urljoin(home, html.unescape(m.group(1))))
+    return found[:4]
+
+
+def fetch(src):
+    """Próbuje kolejno: url, urls[], a na końcu autodetekcji z strony 'home'.
+    Jedno padnięte źródło nie może wywrócić całości."""
+    candidates = ([src["url"]] if src.get("url") else []) + list(src.get("urls", []))
+    problems, stale = [], None
+    tried_discovery = False
+    while candidates or (src.get("home") and not tried_discovery):
+        if not candidates:
+            tried_discovery = True
+            try:
+                candidates = [u for u in discover_feeds(src["home"]) if u not in problems]
+            except Exception as exc:
+                problems.append(f"autodetekcja: {str(exc)[:60]}")
                 break
-        if not items:
-            return src, [], "brak świeżych wpisów"
-        return src, items, None
-    except Exception as exc:  # jedno padnięte źródło nie może wywrócić całości
-        return src, [], str(exc)[:120]
+            if not candidates:
+                problems.append("autodetekcja: brak kanału RSS na stronie")
+                break
+        url = candidates.pop(0)
+        try:
+            r = requests.get(url, headers={"User-Agent": UA}, timeout=20)
+            r.raise_for_status()
+            items, total, newest = parse_feed(r.content)
+            if items:
+                return src, items, None
+            if total == 0:
+                problems.append(f"{url}: odpowiedź bez wpisów (nie RSS?)")
+            else:
+                stale = newest
+                problems.append(f"{url}: tylko stare wpisy"
+                                + (f" (ostatni {newest:%Y-%m-%d})" if newest else ""))
+        except Exception as exc:
+            problems.append(f"{url}: {str(exc)[:70]}")
+    msg = "; ".join(problems[:3]) or "brak adresu"
+    return src, [], msg[:300]
 
 
 def build_prompt(blocs):
