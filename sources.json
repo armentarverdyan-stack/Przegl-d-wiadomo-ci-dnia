@@ -1,0 +1,40 @@
+[
+  {"bloc": "Zachód", "name": "BBC World", "url": "https://feeds.bbci.co.uk/news/world/rss.xml"},
+  {"bloc": "Zachód", "name": "BBC Business", "url": "https://feeds.bbci.co.uk/news/business/rss.xml"},
+  {"bloc": "Zachód", "name": "CNN World", "url": "http://rss.cnn.com/rss/edition_world.rss"},
+  {"bloc": "Zachód", "name": "The Guardian World", "url": "https://www.theguardian.com/world/rss"},
+  {"bloc": "Zachód", "name": "Al Jazeera", "url": "https://www.aljazeera.com/xml/rss/all.xml"},
+  {"bloc": "Zachód", "name": "DW", "url": "https://rss.dw.com/rdf/rss-en-all"},
+
+  {"bloc": "Rosja", "name": "Vesti.ru", "url": "https://www.vesti.ru/vesti.rss"},
+  {"bloc": "Rosja", "name": "TASS", "url": "https://tass.com/rss/v2.xml"},
+  {"bloc": "Rosja", "name": "RIA Novosti", "url": "https://ria.ru/export/rss2/archive/index.xml"},
+  {"bloc": "Rosja", "name": "RT", "url": "https://www.rt.com/rss/news/"},
+  {"bloc": "Rosja", "name": "Kommersant", "url": "https://www.kommersant.ru/RSS/news.xml"},
+  {"bloc": "Rosja", "name": "Meduza (opozycyjna)", "url": "https://meduza.io/rss/all"},
+
+  {"bloc": "Chiny", "name": "Xinhua", "url": "http://www.xinhuanet.com/english/rss/worldrss.xml"},
+  {"bloc": "Chiny", "name": "CGTN", "url": "https://www.cgtn.com/subscribe/rss/section/world.xml"},
+  {"bloc": "Chiny", "name": "China Daily", "url": "http://www.chinadaily.com.cn/rss/world_rss.xml"},
+  {"bloc": "Chiny", "name": "Global Times", "url": "https://www.globaltimes.cn/rss/outbrain.xml"},
+  {"bloc": "Chiny", "name": "SCMP (Hongkong)", "url": "https://www.scmp.com/rss/91/feed"},
+
+  {"bloc": "Indie", "name": "The Hindu", "url": "https://www.thehindu.com/news/international/feeder/default.rss"},
+  {"bloc": "Indie", "name": "Times of India", "url": "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms"},
+  {"bloc": "Indie", "name": "NDTV World", "url": "https://feeds.feedburner.com/ndtvnews-world-news"},
+  {"bloc": "Indie", "name": "Hindustan Times", "url": "https://www.hindustantimes.com/feeds/rss/world-news/rssfeed.xml"},
+
+  {"bloc": "Polska", "name": "Onet", "url": "https://wiadomosci.onet.pl/.feed"},
+  {"bloc": "Polska", "name": "TVP Info", "url": "https://www.tvp.info/rss"},
+  {"bloc": "Polska", "name": "TV Republika", "url": "https://tvrepublika.pl/rss"},
+  {"bloc": "Polska", "name": "wPolityce", "url": "https://wpolityce.pl/rss"},
+  {"bloc": "Polska", "name": "Gazeta.pl", "url": "https://wiadomosci.gazeta.pl/pub/rss/wiadomosci.xml"},
+  {"bloc": "Polska", "name": "Rzeczpospolita", "url": "https://www.rp.pl/rss_main"},
+  {"bloc": "Polska", "name": "Bankier.pl", "url": "https://www.bankier.pl/rss/wiadomosci.xml"},
+  {"bloc": "Polska", "name": "Notes from Poland", "url": "https://notesfrompoland.com/feed/"},
+
+  {"bloc": "Armenia", "name": "CivilNet", "url": "https://www.civilnet.am/en/feed/"},
+  {"bloc": "Armenia", "name": "Armenpress", "url": "https://armenpress.am/rss/"},
+  {"bloc": "Armenia", "name": "News.am", "url": "https://news.am/eng/rss/"},
+  {"bloc": "Armenia", "name": "Azatutyun (RFE/RL)", "url": "https://www.azatutyun.am/api/zrqiteuuir"}
+]
