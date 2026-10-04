@@ -22,8 +22,8 @@ import requests
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(ROOT, "docs", "data.json")
-MAX_PER_FEED = 10
-MAX_AGE_H = 48
+MAX_PER_FEED = 20
+MAX_AGE_H = 168  # 7 dni
 UA = "Mozilla/5.0 (compatible; DailyBrief/1.0)"
 MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-5-5")
 BLOC_ORDER = ["Polska", "Armenia", "Zachód", "Rosja", "Chiny", "Indie"]
@@ -125,7 +125,9 @@ def build_prompt(blocs):
     return "\n".join(parts)
 
 
-SYSTEM = """Jesteś analitykiem mediów. Dostajesz nagłówki z ostatnich 48 godzin \
+SYSTEM = """Jesteś analitykiem mediów. Dostajesz nagłówki z ostatnich 7 dni (przegląd tygodniowy; \
+wybieraj tematy, które dominowały w całym tygodniu lub miały przełomowy moment, \
+a nie drobne wiadomości jednego dnia) \
 z mediów podzielonych na bloki: Polska, Armenia, Zachód, Rosja, Chiny, Indie. \
 Nagłówki bywają po rosyjsku, angielsku, polsku. Pisz po polsku, zwięźle, \
 bez waty, dla czytelnika czytającego na telefonie. Interesuje go tylko polityka \
